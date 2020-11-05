@@ -72,6 +72,14 @@ public class Reader {
         this.rentals = rentals;
     }
 
+    public Set<Penalty> getPenalties() {
+        return penalties;
+    }
+
+    public void setPenalties(Set<Penalty> penalties) {
+        this.penalties = penalties;
+    }
+
     @Override
     public String toString() {
         return "Reader{" +
@@ -80,6 +88,7 @@ public class Reader {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", rentals=" + rentals +
+                ", penalties=" + penalties +
                 '}';
     }
 }

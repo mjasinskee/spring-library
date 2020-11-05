@@ -18,4 +18,46 @@ public class Penalty {
     private LocalDate givenDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private Reader reader;
+
+    public Penalty() {
+    }
+
+    public Penalty(String ISBN, LocalDate givenDate, Reader reader) {
+        this.ISBN = ISBN;
+        this.givenDate = givenDate;
+        this.reader = reader;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
+    }
+
+    public LocalDate getGivenDate() {
+        return givenDate;
+    }
+
+    public void setGivenDate(LocalDate givenDate) {
+        this.givenDate = givenDate;
+    }
+
+    public Reader getReader() {
+        return reader;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
 }

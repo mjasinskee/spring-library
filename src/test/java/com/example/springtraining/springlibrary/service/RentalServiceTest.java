@@ -2,9 +2,11 @@ package com.example.springtraining.springlibrary.service;
 
 import com.example.springtraining.springlibrary.exceptions.BookRentalLimitMetException;
 import com.example.springtraining.springlibrary.model.Book;
+import com.example.springtraining.springlibrary.model.Penalty;
 import com.example.springtraining.springlibrary.model.Reader;
 import com.example.springtraining.springlibrary.model.Rental;
 import com.example.springtraining.springlibrary.repository.BookRepository;
+import com.example.springtraining.springlibrary.repository.PenaltyRepository;
 import com.example.springtraining.springlibrary.repository.ReaderRepository;
 import com.example.springtraining.springlibrary.repository.RentalRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,8 @@ class RentalServiceTest {
     ReaderRepository readerRepository;
     @Autowired
     RentalRepository rentalRepository;
+    @Autowired
+    PenaltyRepository penaltyRepository;
 
     @Autowired
     RentalService rentalService;
@@ -47,9 +51,6 @@ class RentalServiceTest {
 
     @Test
     public void shouldAllowToRentABook() {
-        //given
-
-
         //when
         rentalService.rent(1L, "ISBN1", LocalDate.now());
 
@@ -81,6 +82,19 @@ class RentalServiceTest {
     }
 
     @Test
+    public void shouldGivePenaltyIfBookReturnedAfterMoreThan30Days() {
+        //when
+        LocalDate rentalDate = LocalDate.now();
+        rentalService.rent(1L, "ISBN1", rentalDate);
+        rentalService.takeBack(1L, "ISBN1", rentalDate.plusDays(31));
+
+        //then
+        List<Penalty> penalties = penaltyRepository.findAll();
+        assertThat(penalties.size()).isEqualTo(1);
+        assertThat(penalties.get(0).getISBN()).isEqualTo("ISBN1");
+    }
+
+    @Test
     public void shouldBeAbleToRentMax4BooksAtOnce() {
         //when
         assertThatThrownBy(() -> {
@@ -90,7 +104,6 @@ class RentalServiceTest {
             rentalService.rent(1L, "ISBN4", LocalDate.now());
             rentalService.rent(1L, "ISBN5", LocalDate.now());
         }).isInstanceOf(BookRentalLimitMetException.class);
-        //then
     }
 
     private void readerHasRentedBookWithISBN(long accountId, String isbn) {
