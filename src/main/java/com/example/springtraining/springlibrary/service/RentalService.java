@@ -10,21 +10,25 @@ import com.example.springtraining.springlibrary.model.Reader;
 import com.example.springtraining.springlibrary.model.Rental;
 import com.example.springtraining.springlibrary.repository.BookRepository;
 import com.example.springtraining.springlibrary.repository.ReaderRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 class RentalService {
 
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
+    private final int maxBookCount;
 
-    RentalService(BookRepository bookRepository, ReaderRepository readerRepository) {
+    RentalService(BookRepository bookRepository,
+                  ReaderRepository readerRepository,
+                  @Value("${book.count.max}") int maxBookCount) {
         this.bookRepository = bookRepository;
         this.readerRepository = readerRepository;
+        this.maxBookCount = maxBookCount;
     }
 
     void rent(Long accountId, String ISBN, LocalDate dateOfRenting) {
@@ -42,7 +46,7 @@ class RentalService {
     }
 
     private boolean bookLimitReached(Reader reader) {
-        return reader.getRentals().size() >= 4;
+        return reader.getRentals().size() >= maxBookCount;
     }
 
     void takeBack(Long accountId, String ISBN, LocalDate dateOfTakingBack) {
@@ -52,8 +56,8 @@ class RentalService {
                 .filter(o -> o.getBook().getISBN().equals(ISBN))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchRentalException(accountId, ISBN));
-        if (shouldGivePenalty(rental.getDateOfRental().atStartOfDay(), dateOfTakingBack.atStartOfDay())) {
-            Penalty penalty = new Penalty(rental.getBook().getISBN(),dateOfTakingBack, reader);
+        if (shouldGivePenalty(rental.getDateOfRental(), dateOfTakingBack)) {
+            Penalty penalty = new Penalty(rental.getBook().getISBN(), dateOfTakingBack, reader);
             reader.getPenalties().add(penalty);
         }
         reader.getRentals().remove(rental);
@@ -61,7 +65,7 @@ class RentalService {
         readerRepository.saveAndFlush(reader);
     }
 
-    private boolean shouldGivePenalty(LocalDateTime dayOfRental, LocalDateTime dayOfGivingBack) {
-        return Duration.between(dayOfRental, dayOfGivingBack).toDays() > 30;
+    private boolean shouldGivePenalty(LocalDate dayOfRental, LocalDate dayOfGivingBack) {
+        return Duration.between(dayOfRental.atStartOfDay(), dayOfGivingBack.atStartOfDay()).toDays() > 30;
     }
 }

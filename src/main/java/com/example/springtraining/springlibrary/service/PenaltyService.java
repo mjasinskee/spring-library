@@ -5,6 +5,7 @@ import com.example.springtraining.springlibrary.model.Reader;
 import com.example.springtraining.springlibrary.model.Rental;
 import com.example.springtraining.springlibrary.repository.PenaltyRepository;
 import com.example.springtraining.springlibrary.repository.ReaderRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -19,10 +20,14 @@ class PenaltyService {
 
     private final ReaderRepository readerRepository;
     private final PenaltyRepository penaltyRepository;
+    private final int rentalOutdateDays;
 
-    PenaltyService(ReaderRepository readerRepository, PenaltyRepository penaltyRepository) {
+    PenaltyService(ReaderRepository readerRepository,
+                   PenaltyRepository penaltyRepository,
+                   @Value("${rental.outdate.days}") int rentalOutdateDays) {
         this.readerRepository = readerRepository;
         this.penaltyRepository = penaltyRepository;
+        this.rentalOutdateDays = rentalOutdateDays;
     }
 
     void givePenaltyToAllOutdatedRentals(LocalDate examineDate) {
@@ -51,6 +56,6 @@ class PenaltyService {
     }
 
     boolean isRentalOutdated(LocalDate rentalDate, LocalDate examineDate) {
-        return Duration.between(rentalDate.atStartOfDay(), examineDate.atStartOfDay()).toDays() > 30;
+        return Duration.between(rentalDate.atStartOfDay(), examineDate.atStartOfDay()).toDays() > rentalOutdateDays;
     }
 }
