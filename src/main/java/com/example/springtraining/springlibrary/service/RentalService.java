@@ -45,10 +45,6 @@ class RentalService {
         readerRepository.saveAndFlush(reader);
     }
 
-    private boolean bookLimitReached(Reader reader) {
-        return reader.getRentals().size() >= maxBookCount;
-    }
-
     void takeBack(Long accountId, String ISBN, LocalDate dateOfTakingBack) {
         Reader reader = readerRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new NoSuchReaderException(accountId));
@@ -63,6 +59,10 @@ class RentalService {
         reader.getRentals().remove(rental);
         rental.setReader(null);
         readerRepository.saveAndFlush(reader);
+    }
+
+    private boolean bookLimitReached(Reader reader) {
+        return reader.getRentals().size() >= maxBookCount;
     }
 
     private boolean shouldGivePenalty(LocalDate dayOfRental, LocalDate dayOfGivingBack) {

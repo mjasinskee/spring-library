@@ -1,6 +1,7 @@
 package com.example.springtraining.springlibrary.model;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ public class Reader {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true)
     private Long accountId;
     private String firstName;
     private String lastName;

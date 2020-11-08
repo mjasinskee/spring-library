@@ -47,7 +47,7 @@ class PenaltyServiceTest {
     }
 
     @Test
-    public void shouldGivePeanltyToAllOutdatedRentals() {
+    public void shouldGivePenaltyToAllOutdatedRentals() {
         //given
         LocalDate rentalDate = LocalDate.now();
         rentalService.rent(1L, "ISBN1",rentalDate);

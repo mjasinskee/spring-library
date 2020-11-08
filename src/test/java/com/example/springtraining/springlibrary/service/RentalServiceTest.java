@@ -109,7 +109,7 @@ class RentalServiceTest {
     private void readerHasRentedBookWithISBN(long accountId, String isbn) {
         Optional<Reader> reader = readerRepository.findByAccountId(accountId);
         List<Rental> rentals = new ArrayList<>(reader.get().getRentals());
-        assertThat(rentals.get(0).getBook().getISBN()).isEqualTo("ISBN1");
+        assertThat(rentals.get(0).getBook().getISBN()).isEqualTo(isbn);
     }
 
     private void readerHasOneBookRented(long accountId) {
