@@ -3,7 +3,6 @@ package com.example.springtraining.springlibrary.repository;
 import com.example.springtraining.springlibrary.model.Book;
 import com.example.springtraining.springlibrary.model.Penalty;
 import com.example.springtraining.springlibrary.model.Reader;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +12,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
