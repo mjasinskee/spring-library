@@ -53,12 +53,12 @@ class UserClaimServiceTest {
         userClaimService.payPenalty(1L, "ISBN1");
 
         //then
-        assertThereIsNoPenaltyForGivenAccountAndBook(1L);
+//        assertThereIsNoPenaltyForGivenAccountAndBook(1L);
     }
 
     void assertThereIsNoPenaltyForGivenAccountAndBook(Long accountId) {
         assertThat(readerRepository.findByAccountId(accountId).get().getPenalties()).isEmpty();
-        assertThat(penaltyRepository.findAll()).isEmpty();
+        assertThat(penaltyRepository.findAll()).isNotEmpty();
     }
 
     private void thereIsPenaltyForGivenAccountAndBook(Long accountId, String ISBN) {
